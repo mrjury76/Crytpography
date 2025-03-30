@@ -119,25 +119,25 @@ class Server:
           if (userId not in self.userIds):
                print("unregistered user")
                self.newPerson(userId)
-          else if (userId in blockedPersons):
+          elif(userId in blockedPersons):
                print("blocked message")
                return False
           if (deviceId not in self.deviceIds):
                print("unregistered device")
                self.newDevice(deviceId)
-          else if (deviceId in blockedDevices):
+          elif (deviceId in blockedDevices):
                print("blocked message")
                return False
           if (provinceId not in self.provinceIds):
                print("unregistered province")
                self.newProvince(provinceId)
-          else if (provinceId in blockedProvinces):
+          elif (provinceId in blockedProvinces):
                print("blocked message")
                return False
           if (cityId not in self.cityIds):
                print("unregistered city")
                self.newCity(cityId)
-          else if (cityId in blockedCities):
+          elif (cityId in blockedCities):
                print("blocked message")
                return False
           return True # just means no errors
@@ -179,6 +179,20 @@ class Server:
            self.banThreats()
            self.decrementUse(self.new_time)
            self.last_time = time.time()
-		   
-		   
-          
+
+     def get_metrics(self):
+      return {
+           "totalRequests": self.totalRequests,
+           "loadPercentage": self.loadPercentage,
+           "blockedPersons": len(self.blockedPersons),
+           "blockedDevices": len(self.blockedDevices),
+           "blockedCities": len(self.blockedCities),
+           "blockedProvinces": len(self.blockedProvinces),
+           "userValues": self.userValues,
+           "deviceValues": self.deviceValues,
+           "cityValues": self.cityValues,
+           "provinceValues": self.provinceValues,
+      }
+
+
+
