@@ -1,16 +1,16 @@
+import time
+
 class Server:
-     
-     import time
-     
+
      sleepInterval = 0.1
-     timeAlive = 0
+     last_time = 0
      totalRequests = 0
      loadAmount = 0
      LOADCAP = 100
      loadPercentage = 0
      
      userIds = []
-     userValues = [0,10,5,3]
+     userValues = []
      userTimeSinceUse = []
      
      deviceIds = []
@@ -25,7 +25,10 @@ class Server:
      provinceValues = []
      provinceTimeSinceUse = []
      
-     messageBuffer = []
+     blockedPersons = []
+     blockedDevices = []
+     blockedCities = []
+     blockedProvinces = []
      
      userThreshold = 25
      deviceThreshold = 50
@@ -48,112 +51,134 @@ class Server:
           self.cityTimeSinceUse.append(10)
           
      def newProvince(self, provinceId):
-          self.provinceIds.append(deviceId)
+          self.provinceIds.append(provinceId)
           self.provinceValues.append(0)
           self.provinceTimeSinceUse.append(10)
      
      
-     def __init__(self, myId):
-          self.looping()
      
      # comes in an array of 4
      def incrementUse(self, ids):
-          userValues[ids[0]] = (5 + userValues[ids[0]]) * 1.5
-          deviceValues[ids[1]] = (4 + userValues[ids[1]]) * 1.3
-          cityValues[ids[2]] = (5 + userValues[ids[2]]) * 1.05
-          provinceValues[ids[3]] = (1.5 + provinceValues[ids[3]]) * 1.03
-          userTimeSinceUse[ids[0]] = 0
-          deviceTimeSinceUse[ids[1]] = 0
-          cityTimeSinceUse[ids[2]] = 0
-          provinceTimeSinceUse[ids[3]] = 0
+          self.userValues[ids[0]] = (5 + self.userValues[ids[0]]) * 1.5
+          self.deviceValues[ids[1]] = (4 + self.deviceValues[ids[1]]) * 1.3
+          self.cityValues[ids[2]] = (5 + self.cityValues[ids[2]]) * 1.05
+          self.provinceValues[ids[3]] = (1.5 + self.provinceValues[ids[3]]) * 1.03
+          self.userTimeSinceUse[ids[0]] = 0
+          self.deviceTimeSinceUse[ids[1]] = 0
+          self.cityTimeSinceUse[ids[2]] = 0
+          self.provinceTimeSinceUse[ids[3]] = 0
         
      # loops through all
-     def decrementUse(self):
-          for i in userValues.length:
-               userValues[i] -= sleepInterval
-               userTimeSinceUse[i] += sleepInterval
-          for j in deviceValues.length:
-               deviceValues[j] -= sleepInterval
-               deviceTimeSinceUse[j] += sleepInterval
-          for k in cityValues.length:
-               cityValues[k] -= sleepInterval
-               cityTimeSinceUse[k] += sleepInterval
-          for l in provinceValues.length:
-               provinceValues[l] -= sleepInterval
-               provinceTimeSinceUse[l] += sleepInterval
+     def decrementUse(self, amount):
+          for i in range(len(self.userValues)):
+              if self.userValues[i] > 0:
+                   self.userValues[i] -= amount
+                   self.userTimeSinceUse[i] += amount
+          for j in range(len(self.deviceValues)):
+              if self.deviceValues[j] > 0:
+                   self.deviceValues[j] -= amount
+                   self.deviceTimeSinceUse[j] += amount
+          for k in range(len(self.cityValues)):
+              if self.cityValues[k] > 0:
+                   self.cityValues[k] -= amount
+                   self.cityTimeSinceUse[k] += amount
+          for l in range(len(self.provinceValues)):
+              if self.provinceValues[l] > 0:
+                   self.provinceValues[l] -= amount
+                   self.provinceTimeSinceUse[l] += amount
           
-     def message(self, userId, deviceId, cityId, provinceId, messageTxt):
-          messageBuffer.append(userId, deviceId, cityId, provinceId, messageTxt)
-               
-     def handleBuffer(self):
-          for i in messageBuffer:
-               if (verifyIds(userId, deviceId, cityId, provinceId)):
-                    which = getIdIndexes(userId, deviceId, cityId, provinceId)
-                    incrementUse(which)
-                    print("new message processed")
-          messageBuffer = []
      
      # convert a validated set of Ids ino indexes to access them
      def getIdIndexes(self, userId, deviceId, cityId, provinceId):
-          indexes = [-1,-1,-1,-1]
-          counters = [0,0,0,0]
-          for a in userIds:
-               if (userId == a):
-                    indexes[0] = counters[0]
-               counters[0] += 1
-          for b in deviceIds:
-               if (deviceId == b):
-                    indexes[1] = counters[1]
-               counters[1] += 1
-          for c in cityIds:
-               if (userId == c):
-                    indexes[2] = counters[2]
-               counters[2] += 1
-          for d in provinceIds:
-               if (provinceId == d):
-                    indexes[3] = counters[3]
-               counters[3] += 1
-          return indexes
+      indexes = [0,0,0,0]
+      counters = [0,0,0,0]
+      for a in self.userIds:
+            if (userId == a):
+                  indexes[0] = counters[0]
+            else:
+                  counters[0] += 1
+      for b in self.deviceIds:
+            if (deviceId == b):
+                  indexes[1] = counters[1]
+            else:
+                  counters[1] += 1
+      for c in self.cityIds:
+            if (userId == c):
+                  indexes[2] = counters[2]
+            else:
+                  counters[2] += 1
+      for d in self.provinceIds:
+            if (provinceId == d):
+                  indexes[3] = counters[3]
+            else:
+                  counters[3] += 1
+      return indexes
      
      # validate the set of IDs
      def verifyIds(self, userId, deviceId, cityId, provinceId):
-          if (userId not in userIds):
+          if (userId not in self.userIds):
                print("unregistered user")
+               self.newPerson(userId)
+          else if (userId in blockedPersons):
+               print("blocked message")
                return False
-          if (deviceId not in deviceIds):
+          if (deviceId not in self.deviceIds):
                print("unregistered device")
+               self.newDevice(deviceId)
+          else if (deviceId in blockedDevices):
+               print("blocked message")
                return False
-          if (provinceId not in provinceIds):
+          if (provinceId not in self.provinceIds):
                print("unregistered province")
+               self.newProvince(provinceId)
+          else if (provinceId in blockedProvinces):
+               print("blocked message")
                return False
-          if (cityId not in cityIds):
+          if (cityId not in self.cityIds):
                print("unregistered city")
+               self.newCity(cityId)
+          else if (cityId in blockedCities):
+               print("blocked message")
                return False
+          return True # just means no errors
      
      def banThreats(self):
-          for i in userValues.length:
-               if (userValues[i]) >= userThreshold:
-                    blockedPersons.append(userIds[i])
+          for i in range(len(self.userValues)):
+               if (self.userValues[i]) >= self.userThreshold:
+                    self.userStrikes[i] += 1
+                    if (self.userStrikes[i] == 3):
+                         self.blockedPersons.append(self.userIds[i])
               
-          for j in deviceValues.length:
-               if (deviceValues[j]) >=  deviceThreshold:
-                    blockedPersons.append(deviceIds[i])
+          for j in range(len(self.deviceValues)):
+               if (self.deviceValues[j]) >=  self.deviceThreshold:
+                    self.deviceStrikes[i] += 1
+                    if (self.deviceStrikes[i] == 3):
+                        self.blockedDevices.append(self.deviceIds[i])
                
-          for k in cityValues.length:
-               if (cityValues[k]) >= cityThreshold:
-                    blockedPersons.append(cityIds[i])
+          for k in range(len(self.cityValues)):
+               if (self.cityValues[k]) >= self.cityThreshold:
+                    self.cityStrikes[i] += 1
+                    if (self.cityStrikes[i] == 3):
+                         self.blockedCities.append(self.cityIds[i])
                
-          for l in provinceValues.length:
-               if (provinceValues[l]) >=  provinceThreshold:
-                    blockedPersons.append(provinceIds[i])
+          for l in range(len(self.provinceValues)):
+               if (self.provinceValues[l]) >=  self.provinceThreshold:
+                    self.provinceStrikes[i] += 1
+                    if (self.provinceStrikes[i] == 3):
+                         self.blockedProvince.append(self.provinceIds[i])
                
-     def looping(self):
-          while (True):
-               start_time = time.time()
-               timeAlive += sleepInterval
-               decrementUse()
-               handleBuffer()
-               banThreats()
-               elapsed_time = time.time() - start_time
-               time.sleep(max(0,interval-elapsed_time))
+     def new_message(self, userId, deviceId, cityId, provinceId, messageTxt):
+           self.new_time = time.time() - self.last_time
+           self.timeAlive += self.new_time
+           if (self.verifyIds(userId, deviceId, cityId, provinceId)):
+                which = self.getIdIndexes(userId, deviceId, cityId, provinceId)
+                print(which)
+                print(self.deviceValues)
+                self.incrementUse(which)
+                print("new message processed")
+           self.banThreats()
+           self.decrementUse(self.new_time)
+           self.last_time = time.time()
+		   
+		   
           

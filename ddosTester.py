@@ -1,10 +1,14 @@
+from Server import Server
+from Person import Person
+from Device import Device
+import random
+import time
+
 class ddosTester:
      
-     from Server import Server
-     from Person import Person
-     from Device import Device
-
-     server = Server(0)
+     
+     
+     server = Server()
      device1 = Device(10, 'kamloops', 'BC', server)
      device2 = Device(20, 'kamloops', 'BC', server)
      device3 = Device(30, 'calgary', 'AB', server)
@@ -15,5 +19,14 @@ class ddosTester:
      person4 = Person(4, 'Nice', device1)
      person5 = Person(5, 'Nice', device2)
      person6 = Person(6, 'Bad Actor', device3)
-     
+     person_list = [person1, person2, person3, person4, person5, person6]
+     while True:
+         for i in range(len(person_list)):
+             if person_list[i].mode == "Bad Actor":
+                    repeat = random.randrange(0,5)
+                    while (repeat > 0):
+                         repeat -= 1
+                         person_list[i].runtime()
+             time.sleep(random.randrange(1.5,5))
+         
      
