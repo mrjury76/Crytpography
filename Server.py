@@ -119,25 +119,25 @@ class Server:
           if (userId not in self.userIds):
                print("unregistered user")
                self.newPerson(userId)
-          elif(userId in blockedPersons):
+          elif(userId in self.blockedPersons):
                print("blocked message")
                return False
           if (deviceId not in self.deviceIds):
                print("unregistered device")
                self.newDevice(deviceId)
-          elif (deviceId in blockedDevices):
+          elif (deviceId in self.blockedDevices):
                print("blocked message")
                return False
           if (provinceId not in self.provinceIds):
                print("unregistered province")
                self.newProvince(provinceId)
-          elif (provinceId in blockedProvinces):
+          elif (provinceId in self.blockedProvinces):
                print("blocked message")
                return False
           if (cityId not in self.cityIds):
                print("unregistered city")
                self.newCity(cityId)
-          elif (cityId in blockedCities):
+          elif (cityId in self.blockedCities):
                print("blocked message")
                return False
           return True # just means no errors
