@@ -2,8 +2,9 @@ from Server import Server
 from Person import Person
 from Device import Device
 from Cryptography import Cryptography
-from Crypto.Random import get_random_bytes
-# import matplotlib.pyplot as plt
+import plotly.graph_objs as go
+import plotly.io as pio
+import time
 import random
 import time
 
@@ -24,13 +25,31 @@ class ddosTester:
      person6 = Person(6, 'Bad Actor', device3, aes_key)
      person_list = [person1, person2, person3, person4, person5, person6]
      while True:
+         output = []
          for i in range(len(person_list)):
              if person_list[i].mode == "Bad Actor":
                     repeat = random.randrange(0,5)
                     while (repeat > 0):
                          repeat -= 1
-                         person_list[i].runtime()
-             time.sleep(random.randrange(2,5))
+                         output[i] = person_list[i].runtime()
+
+             # Initialize empty lists for data storage
+             x_data = []
+             y_data = []
+
+             x_data.append(i)
+             y_data.append(random.randint(0, 100))  # Generate random data
+
+             fig = go.Figure()
+             print(i)
+             print(output[i])
+             fig.add_trace(go.Scatter(x=output[i], y=y_data, mode='lines+markers', name='Live Data'))
+             fig.update_layout(title='Live Updating Line Graph', xaxis_title='Time', yaxis_title='Value')
+
+             # Show or update the graph
+             pio.show(fig)
+
+         time.sleep(random.randrange(2,5))
     
          
      
