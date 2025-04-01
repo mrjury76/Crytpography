@@ -1,8 +1,7 @@
 from Server import Server
 from Person import Person
 from Device import Device
-from Plotting import MetricsPlotter
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import random
 import time
 
@@ -30,11 +29,6 @@ class ddosTester:
                          repeat -= 1
                          person_list[i].runtime()
              time.sleep(random.randrange(2,5))
-            #  metrics = server.get_metrics()
-            #  plotter = MetricsPlotter(metrics)
-            #  plotter.plot()
-
-     # Collect and plot metrics using MetricsPlotter
     
          
      

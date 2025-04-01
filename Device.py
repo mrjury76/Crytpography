@@ -5,7 +5,8 @@ class Device:
      province = 'Land'
      myServer = None
      blockedPersons = []
-     
+
+     #device is passed the server when called and has an id city and province
      def __init__(self, myId, city, province, myServer):
           self.myId = myId
           self.city = city

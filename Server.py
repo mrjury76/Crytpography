@@ -4,6 +4,7 @@ class Server:
 
      sleepInterval = 0.1
      last_time = 0
+     timeAlive = 0
      totalRequests = 0
      loadAmount = 0
      LOADCAP = 100
@@ -58,6 +59,7 @@ class Server:
      
      
      # comes in an array of 4
+     #plot these guys
      def incrementUse(self, ids):
           self.userValues[ids[0]] = (5 + self.userValues[ids[0]]) * 1.5
           self.deviceValues[ids[1]] = (4 + self.deviceValues[ids[1]]) * 1.3
@@ -179,20 +181,4 @@ class Server:
            self.banThreats()
            self.decrementUse(self.new_time)
            self.last_time = time.time()
-
-     def get_metrics(self):
-      return {
-           "totalRequests": self.totalRequests,
-           "loadPercentage": self.loadPercentage,
-           "blockedPersons": len(self.blockedPersons),
-           "blockedDevices": len(self.blockedDevices),
-           "blockedCities": len(self.blockedCities),
-           "blockedProvinces": len(self.blockedProvinces),
-           "userValues": self.userValues,
-           "deviceValues": self.deviceValues,
-           "cityValues": self.cityValues,
-           "provinceValues": self.provinceValues,
-      }
-
-
-
+           #decrypt messege txt and print it
