@@ -1,7 +1,9 @@
 import time
-
+from Cryptography import Cryptography
 class Server:
 
+     crypto = Cryptography()
+     aes_key = 0
      sleepInterval = 0.1
      last_time = 0
      timeAlive = 0
@@ -174,11 +176,18 @@ class Server:
            self.timeAlive += self.new_time
            if (self.verifyIds(userId, deviceId, cityId, provinceId)):
                 which = self.getIdIndexes(userId, deviceId, cityId, provinceId)
-                print(which)
-                print(self.deviceValues)
+                # print(which)
+                # print(self.deviceValues)
                 self.incrementUse(which)
-                print("new message processed")
+                print("Encrypted: " +messageTxt)
+                plaintext = self.crypto.decrypt_aes(self.aes_key, messageTxt)
+                print("new message processed and decrypted")
+                print(plaintext)
            self.banThreats()
            self.decrementUse(self.new_time)
            self.last_time = time.time()
            #decrypt messege txt and print it
+
+
+     def __init__(self, key):
+        self.aes_key = key

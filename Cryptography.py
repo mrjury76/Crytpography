@@ -40,6 +40,8 @@ class Cryptography:
         hasher = SHA3_256.new(message.encode())
         return hasher.hexdigest()
 
+
+
 if __name__ == "__main__":
     crypto = Cryptography()
     plaintext = "Hello World!"
