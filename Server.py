@@ -27,14 +27,19 @@ class Server:
      provinceIds = []
      provinceValues = []
      provinceTimeSinceUse = []
+
+     userStrikes = [0,0,0,0,0,0]
+     deviceStrikes = [0,0,0,0,0,0]
+     cityStrikes = [0,0,0,0,0,0]
+     provinceStrikes = [0,0,0,0,0,0]
      
      blockedPersons = []
      blockedDevices = []
      blockedCities = []
      blockedProvinces = []
      
-     userThreshold = 25
-     deviceThreshold = 50
+     userThreshold = 250
+     deviceThreshold = 400
      cityThreshold = 1000
      provinceThreshold = 10000
      
@@ -63,7 +68,7 @@ class Server:
      # comes in an array of 4
      #plot these guys
      def incrementUse(self, ids):
-          self.userValues[ids[0]] = (5 + self.userValues[ids[0]]) * 1.5
+          self.userValues[ids[0]] = (5 + self.userValues[ids[0]]) * 1.3
           self.deviceValues[ids[1]] = (4 + self.deviceValues[ids[1]]) * 1.3
           self.cityValues[ids[2]] = (5 + self.cityValues[ids[2]]) * 1.05
           self.provinceValues[ids[3]] = (1.5 + self.provinceValues[ids[3]]) * 1.03
@@ -76,7 +81,7 @@ class Server:
      def decrementUse(self, amount):
           for i in range(len(self.userValues)):
               if self.userValues[i] > 0:
-                   self.userValues[i] -= amount
+                   self.userValues[i] -= amount * 1.5
                    self.userTimeSinceUse[i] += amount
           for j in range(len(self.deviceValues)):
               if self.deviceValues[j] > 0:
@@ -173,6 +178,9 @@ class Server:
                
      def new_message(self, userId, deviceId, cityId, provinceId, messageTxt):
            self.new_time = time.time() - self.last_time
+           print("time: " , self.new_time)
+           if self.new_time > 5.0 :
+               self.new_time = 5.0
            self.timeAlive += self.new_time
            if (self.verifyIds(userId, deviceId, cityId, provinceId)):
                 which = self.getIdIndexes(userId, deviceId, cityId, provinceId)
